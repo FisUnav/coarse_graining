@@ -1,6 +1,7 @@
 #ifndef GRID2D_H_
 #define GRID2D_H_
 
+#include <iostream>
 #include <Eigen/Dense>
 #include <vector>
 
@@ -23,10 +24,10 @@ namespace coarse_graining{
 
         }
 
-        void density_field(const MatrixXd &data, double (*cg_function)(double, double, double, double));
-        void momentum_field(const MatrixXd &data, double (*cg_function)(double, double, double, double));
-        void velocity_field(const MatrixXd &data, double (*cg_function)(double, double, double, double));
-        void kstress_field(const MatrixXd &data, double (*cg_function)(double, double, double, double));
+        void density_field(const MatrixXd &data, double (*cg_function)(double, double, double, double, double));
+        void momentum_field(const MatrixXd &data, double (*cg_function)(double, double, double, double, double));
+        void velocity_field(const MatrixXd &data, double (*cg_function)(double, double, double, double, double));
+        void kstress_field(const MatrixXd &data, double (*cg_function)(double, double, double, double, double));
     };    
 }
 

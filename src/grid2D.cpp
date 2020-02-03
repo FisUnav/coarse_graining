@@ -13,14 +13,13 @@ namespace coarse_graining{
 
 
     void grid2D::density_field(const MatrixXd &data,
-            double (*cg_function)(double, double, double, double)) {
-        double phi;
-
-        Matrix<double, Dynamic, Dynamic> relData = data(neighbors, Eigen::all);
+            double (*cg_function)(double, double, double, double, double)) {
+        double phi;        
+        Matrix<double, Dynamic, Dynamic> relData = data(neighbors, all);
         density = 0;
         volFrac = 0;
         for (int i = 0; i < nNeighbors; i++){
-            phi = cg_function(x, y, relData(i, 1), relData(i, 2));
+            phi = cg_function(x, y, relData(i, 1), relData(i, 2), relData(i, 5));
             volFrac += phi;
             density += relData(i, 0) * phi / areaTerm; //Mass of the particle should be in 1st column
         }
@@ -28,16 +27,16 @@ namespace coarse_graining{
 
     
     void grid2D::momentum_field(const MatrixXd &data,
-            double (*cg_function)(double, double, double, double)) {
+            double (*cg_function)(double, double, double, double, double)) {
 
-        Matrix<double, Dynamic, Dynamic> relData = data(neighbors, Eigen::all);
+        Matrix<double, Dynamic, Dynamic> relData = data(neighbors, all);
         double densityP, phi;
         density = 0;
         volFrac = 0;
         momentum(0) = 0;
         momentum(1) = 0;
         for (int i = 0; i < nNeighbors; i++){
-            phi = cg_function(x, y, relData(i, 1), relData(i, 2));
+            phi = cg_function(x, y, relData(i, 1), relData(i, 2), relData(i, 5));
             densityP = relData(i, 0) * phi / areaTerm;
             volFrac += phi;   
             density += densityP;
@@ -49,9 +48,9 @@ namespace coarse_graining{
 
     
     void grid2D::velocity_field(const MatrixXd &data, 
-            double (*cg_function)(double, double, double, double)) {
+            double (*cg_function)(double, double, double, double, double)) {
 
-        if (!momentum_check) momentum_field(data, *cg_function);
+        if (!momentum_check) momentum_field(data, cg_function);
         velocity(0) = momentum(0) / density;
         velocity(1) = momentum(1) / density;
         velocity_check = true;
@@ -59,17 +58,17 @@ namespace coarse_graining{
 
     
     void grid2D::kstress_field(const MatrixXd &data, 
-            double (*cg_function)(double, double, double, double)) {
+            double (*cg_function)(double, double, double, double, double)) {
 
-        if (!velocity_check) velocity_field(data, *cg_function);
-        Matrix<double, Dynamic, Dynamic> relData = data(neighbors, Eigen::all);
+        if (!velocity_check) velocity_field(data, cg_function);
+        Matrix<double, Dynamic, Dynamic> relData = data(neighbors, all);
         double densityP, phi, vxx, vxy, vyy;
         kstress(0) = 0;
         kstress(1) = 0;
         kstress(2) = 0;
         kstress(3) = 0;
         for (int i = 0; i < nNeighbors; i++){
-            phi = cg_function(x, y, relData(i, 1), relData(i, 2));
+            phi = cg_function(x, y, relData(i, 1), relData(i, 2), relData(i, 5));
             densityP = relData(i, 0) * phi / areaTerm;
             vxx = (relData(i, 3) - velocity(0)) * (relData(i, 3) - velocity(0));
             vxy = (relData(i, 3) - velocity(0)) * (relData(i, 4) - velocity(1));
