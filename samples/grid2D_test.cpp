@@ -1,7 +1,8 @@
 #include <cmath>
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 #include <vector>
+
 #include "../headers/grid2D.h"
 
 using namespace coarse_graining;
