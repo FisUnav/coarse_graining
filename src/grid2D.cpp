@@ -7,7 +7,7 @@ namespace coarse_graining{
 
 
     grid2D::grid2D(double _x, double _y, double gridRes, vector<int> _neighbors): x(_x), y(_y), 
-    areaTerm(gridRes*gridRes), neighbors(_neighbors),  nNeighbors(_neighbors.size()), 
+    areaTerm(gridRes*gridRes), neighbors(_neighbors), nNeighbors(_neighbors.size()), 
     momentum_check(false), velocity_check(false) {
     }
 
